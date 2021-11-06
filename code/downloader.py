@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import argparse
 
 def download_pages(f_path, out_path='', base=0, to=-1):
-    number=0
+    number=base
     with open(f_path) as file:
     #the line will be the url
         lines = file.readlines()
