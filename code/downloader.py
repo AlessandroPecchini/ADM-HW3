@@ -11,12 +11,16 @@ def download_pages(f_path, out_path='', base=0, to=-1):
     with open(f_path) as file:
     #the line will be the url
         lines = file.readlines()
-    to = to if to >=0 else len(lines)
-    for idx in range(to-base):
-        url = lines[idx+base]
+
+    to = max(to, len(lines)) if to >=0 else len(lines)
+
+    idx = base
+    while idx<to:
+
+        url = lines[idx]
         response=requests.get(url, headers=headers)
         if response.status_code==403:
-            sleep_time =  randint(20,40)
+            sleep_time =  randint(5,25)
             print(f"An error occoured, I'll sleep for {sleep_time} seconds")
             sleep(sleep_time)
             continue
@@ -29,6 +33,7 @@ def download_pages(f_path, out_path='', base=0, to=-1):
         html_file.write(response.text)
         html_file.close()
         number+=1
+        idx+=1
 
 
 def parse_args():
