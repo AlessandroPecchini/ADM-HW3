@@ -2,22 +2,31 @@ import requests
 import os
 from bs4 import BeautifulSoup
 import argparse
+from time import *
+from random import *
 
 def download_pages(f_path, out_path='', base=0, to=-1):
     number=base
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     with open(f_path) as file:
     #the line will be the url
         lines = file.readlines()
     to = to if to >=0 else len(lines)
+    for idx in range(to-base):
+        url = lines[idx+base]
+        response=requests.get(url, headers=headers)
+        if response.status_code==403:
+            sleep_time =  randint(2,10)
+            print(f"An error occoured, I'll sleep for {sleep_time} seconds")
+            sleep(sleep_time)
+            continue
 
-    for url in lines[base:to]:
-        response=requests.get(url)
-        soup=BeautifulSoup(response.content,"html.parser")
-        soup=str(soup)
+        error_btn = "<button type=\"submit\" class=\"g-recaptcha\" data-sitekey=\"6Ld_1aIZAAAAAF6bNdR67ICKIaeXLKlbhE7t2Qz4\" data-callback='onSubmit' data-action='submit'>Submit</button>"
+        print(f"request: {number} response code: {response.status_code} error button in text?: {error_btn in response.text}")
         #save file as htlm
         name=('article_%d.html' % (number))
         html_file = open(os.path.join(out_path,name),"w")
-        html_file.write(soup)
+        html_file.write(response.text)
         html_file.close()
         number+=1
 
