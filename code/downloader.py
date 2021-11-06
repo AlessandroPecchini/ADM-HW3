@@ -16,7 +16,7 @@ def download_pages(f_path, out_path='', base=0, to=-1):
         url = lines[idx+base]
         response=requests.get(url, headers=headers)
         if response.status_code==403:
-            sleep_time =  randint(2,10)
+            sleep_time =  randint(20,40)
             print(f"An error occoured, I'll sleep for {sleep_time} seconds")
             sleep(sleep_time)
             continue
