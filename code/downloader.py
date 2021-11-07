@@ -12,7 +12,7 @@ def download_pages(f_path, out_path='', base=0, to=-1):
     #the line will be the url
         lines = file.readlines()
 
-    to = max(to, len(lines)) if to >=0 else len(lines)
+    to = min(to, len(lines)) if to >=0 else len(lines)
 
     idx = base
     while idx<to:
