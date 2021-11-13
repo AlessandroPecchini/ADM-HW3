@@ -16,7 +16,7 @@
         * Characters
         * Voices
         * Staff
-
+        * Top Reviews
 
 '''
 
@@ -173,7 +173,18 @@ def get_related_animes(soup, ret):
             animes.add(a_cont[0])
 
     ret['related_anime'] = list(animes)
+           
 
+def get_top_reviews(soup, ret):
+    '''
+        This function adds to the given dictionary a key 'top_reviews' with the five top reviews
+        of the anime whose soup we are passing as argument
+    '''
+    
+    divs = soup.find_all('div', {'class': 'spaceit textReadability word-break pt8 mt8'})[:5]
+    
+    ret['top_reviews'] = [div.contents[2].strip() for div in divs]
+    
 
 def get_staff(div, ret):
     '''
@@ -217,6 +228,7 @@ def get_characters_voices(div, ret):
         if vc_a is not None:
             ret['voices'].append(vc_a.contents[0])
 
+
 # --------------------------- Putting all togheter --------------------------- #
 
 def get_total_info(fname):
@@ -230,6 +242,7 @@ def get_total_info(fname):
     get_left_attributes(soup, ret)
     get_synopsis(soup, ret)
     get_related_animes(soup, ret)
+    get_top_reviews(soup, ret)
     
     # Retrieving the divs for the staff and the actor and characters
     divs = soup.find_all('div', {'class':"detail-characters-list clearfix"})
@@ -259,7 +272,7 @@ def get_total_info_from_idx(idx, base_dir=os.path.join('..', 'data', 'html_pages
         Given the index of an anime this function returns the dictionary with the information about that
     '''
 
-    fname = f"article_{str(idx).zfill(5)}.html"
+    fname = f"article_{str(idx)}.html"
     return get_total_info(os.path.join(base_dir, fname))
 
 
@@ -269,7 +282,7 @@ def get_tsv_from_idx(idx, base_dir=os.path.join('..', 'data', 'html_pages')):
         using its file in the base_dir directory
     '''
     # Fields of the tsv
-    fields = ['title', 'type', 'episodes', 'start_date', 'end_date', 'score', 'users', 'ranked', 'popularity', 'members', 'synopsis', 'related_anime', 'characters', 'voices', 'staff']
+    fields = ['title', 'type', 'episodes', 'start_date', 'end_date', 'score', 'users', 'ranked', 'popularity', 'members', 'synopsis', 'related_anime', 'characters', 'voices', 'staff', 'top_reviews']
     head = '\t'.join(fields)
     ret = '' 
     
@@ -295,7 +308,7 @@ def save_tsv_info(start, end, src_dir='../data/html_pages', dst_dir='../data/tsv
     if not os.path.exists(dst_dir):
         os.mkdir(dst_dir)
     
-    fields = ['title', 'type', 'episodes', 'start_date', 'end_date', 'score', 'users', 'ranked', 'popularity', 'members', 'synopsis', 'related_anime', 'characters', 'voices', 'staff']
+    fields = ['title', 'type', 'episodes', 'start_date', 'end_date', 'score', 'users', 'ranked', 'popularity', 'members', 'synopsis', 'related_anime', 'characters', 'voices', 'staff', 'top_reviews']
     
     # Creating the total tsv 
     total_tsv = os.path.join(dst_dir, 'total_pages.tsv')
