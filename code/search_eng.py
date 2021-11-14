@@ -179,10 +179,11 @@ def get_results(query, inv_idx):
     This functions finds the documents all the words
     in the query are in.
     
-    It finds them in three steps:
-    1. creates a list of docs each word is in from the inverted index
+    It finds them in four steps:
+    1. retrieves the list of docs each word is in from the inverted index
     2. converts that list into a set
-    3. intersects all those sets into a single set
+    3. creates a list of all these sets (one for each word)
+    4. intersects all those sets into a single set
        
     Arguments
         query : list of words as parsed by 'parse_query'
