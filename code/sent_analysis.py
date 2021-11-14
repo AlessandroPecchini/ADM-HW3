@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.tokenize import sent_tokenize
 
@@ -24,11 +25,10 @@ def filter_by_length(lst, length):
 
 def norm_col(lst, new_min = 0, new_max = 1):
     """
-    This function normalizes a list of numbers 
-    so its min value is 0 and its max value is 1
+    This function normalizes a list of numbers
     
     Arguments:
-        lst     : column of a pandas dataframe or list-like
+        lst     : list-like
         new_min : (float)
         new_max : (float)
     Returns:
@@ -166,4 +166,39 @@ def sent_multiple_pie_charts(df, plt, axes, title_size = 20):
         
         sent_pie_chart(ax, df[df['type'] == anime_type]['sentiment'])
         
+    return plt
+
+
+def sent_scatter(x, y, sent, xlabel = "", ylabel = ""):
+    """
+    This function creates a matplotlib scatterplot
+    with the scatter points with a different color
+    depending on their sentiment
+    
+    Arguments
+        x    : list-like 
+        y    : list-like
+        sent : list-like with "Positive, "Negative" or "Neutral"
+        xlabel : label of the x axis
+        ylabel : label of the y axis
+    
+    Returns
+        updated plt object
+    """
+    
+    colors = {"Positive": "greenyellow",
+              "Neutral": "skyblue",
+              "Negative": "crimson"}
+
+    plt.scatter(x, y, c = [colors[s] for s in sent], edgecolors = "b")
+
+    legend_elements = [Line2D([0], [0], lw = 0, marker = "o", label = "Positive", color = "greenyellow"),
+                       Line2D([0], [0], lw = 0, marker = "o", label = "Neutral",  color = "skyblue"),
+                       Line2D([0], [0], lw = 0, marker = "o", label = "Negative", color = "crimson")]
+    
+    plt.legend(handles = legend_elements)
+    
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    
     return plt
